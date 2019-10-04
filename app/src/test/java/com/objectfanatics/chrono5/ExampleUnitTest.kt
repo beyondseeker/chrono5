@@ -35,7 +35,7 @@ class ExampleUnitTest {
             .loaded
         with(dynamicType) {
             println("name = $name")
-            methods.forEachIndexed { index, method -> println("methods[$index].name = ${method.name}") }
+            methods.forEach { println(it) }
         }
     }
 }
