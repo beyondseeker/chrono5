@@ -1,6 +1,7 @@
 package com.objectfanatics.chrono5
 
 import net.bytebuddy.ByteBuddy
+import net.bytebuddy.description.modifier.Visibility
 import net.bytebuddy.implementation.FixedValue
 import net.bytebuddy.matcher.ElementMatchers
 import org.junit.Assert.assertEquals
@@ -30,6 +31,25 @@ class ExampleUnitTest {
         val dynamicType = ByteBuddy()
             .rebase(TestInterface1::class.java)
             .name("${TestInterface1::class.java.`package`!!.name}.${TestInterface1::class.java.simpleName}_")
+            .make()
+            .load(javaClass.classLoader)
+            .loaded
+        with(dynamicType) {
+            println("name = $name")
+            methods.forEach { println(it) }
+        }
+    }
+
+    // Create new interface.
+    @Test
+    fun newInterface() {
+        val dynamicType = ByteBuddy()
+            .makeInterface()
+            .name("${TestInterface1::class.java.`package`!!.name}.NewInterface")
+            // A method from TestInterface1
+            .define(TestInterface1::class.java.methods[0]).withoutCode()
+            // New method
+            .defineMethod("newMethod", String::class.java, Visibility.PUBLIC).withoutCode()
             .make()
             .load(javaClass.classLoader)
             .loaded
