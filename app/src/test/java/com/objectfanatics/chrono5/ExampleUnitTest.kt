@@ -19,4 +19,23 @@ class ExampleUnitTest {
             .loaded
         assertEquals("Hello World!", dynamicType.newInstance().toString())
     }
+
+    interface TestInterface1 {
+        fun testFunction1(arg1: String)
+    }
+
+    // Create the same class as TestInterface1 expect for the name.
+    @Test
+    fun copyTestInterface1ExpectForName() {
+        val dynamicType = ByteBuddy()
+            .rebase(TestInterface1::class.java)
+            .name("${TestInterface1::class.java.`package`!!.name}.${TestInterface1::class.java.simpleName}_")
+            .make()
+            .load(javaClass.classLoader)
+            .loaded
+        with(dynamicType) {
+            println("name = $name")
+            methods.forEachIndexed { index, method -> println("methods[$index].name = ${method.name}") }
+        }
+    }
 }
