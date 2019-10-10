@@ -23,9 +23,11 @@ class MainActivity : AppCompatActivity() {
             .method(ElementMatchers.named("toString"))
             .intercept(FixedValue.value("Hello World!"))
             .make()
+            // Memo: The following Exception occurs when you call ".load(javaClass.classLoader)" on Android
+            // java.lang.ClassNotFoundException: Didn't find class "java.lang.instrument.ClassFileTransformer"
             .load(
                 this::class.java.classLoader,
-                AndroidClassLoadingStrategy.Wrapping( application.getDir( "dexgen", Context.MODE_PRIVATE ) )
+                AndroidClassLoadingStrategy.Wrapping(application.getDir("dexgen", Context.MODE_PRIVATE))
             )
             .loaded
         Toast.makeText(this, dynamicType.newInstance().toString(), Toast.LENGTH_SHORT).show()
